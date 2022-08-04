@@ -5,7 +5,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -115,6 +114,9 @@ class _MockHttpClient implements HttpClient {
   void addProxyCredentials(String host, int port, String realm, HttpClientCredentials credentials) { }
 
   @override
+  Future<ConnectionTask<Socket>> Function(Uri url, String? proxyHost, int? proxyPort)? connectionFactory;
+
+  @override
   Future<bool> Function(Uri url, String scheme, String realm)? authenticate;
 
   @override
@@ -122,6 +124,9 @@ class _MockHttpClient implements HttpClient {
 
   @override
   bool Function(X509Certificate cert, String host, int port)? badCertificateCallback;
+
+  @override
+  Function(String line)? keyLog;
 
   @override
   void close({ bool force = false }) { }

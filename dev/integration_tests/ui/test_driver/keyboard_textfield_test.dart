@@ -40,8 +40,10 @@ void main() {
       // Bring up keyboard
       await driver.tap(textFieldFinder);
 
-      // TODO(jmagman): Remove timeout once flake has been diagnosed. https://github.com/flutter/flutter/issues/96787
-      await driver.waitFor(keyboardVisibilityIndicatorFinder, timeout: const Duration(seconds: 5));
+      // The blinking cursor may have animation. Do not wait for it to finish.
+      await driver.runUnsynchronized(() async {
+        await driver.waitFor(keyboardVisibilityIndicatorFinder);
+      });
 
       // Ensure that TextField is visible again
       await driver.waitFor(textFieldFinder);

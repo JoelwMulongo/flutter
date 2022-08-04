@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'dart:ui' show Brightness, DisplayFeature, DisplayFeatureState, DisplayFeatureType;
+import 'dart:ui' show Brightness, DisplayFeature, DisplayFeatureState, DisplayFeatureType, GestureSettings, ViewConfiguration;
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
@@ -171,6 +171,7 @@ void main() {
       boldText: true,
       highContrast: true,
       platformBrightness: Brightness.dark,
+      navigationMode: NavigationMode.directional,
       gestureSettings: gestureSettings,
       displayFeatures: customDisplayFeatures,
     );
@@ -188,6 +189,7 @@ void main() {
     expect(copied.boldText, true);
     expect(copied.highContrast, true);
     expect(copied.platformBrightness, Brightness.dark);
+    expect(copied.navigationMode, NavigationMode.directional);
     expect(copied.gestureSettings, gestureSettings);
     expect(copied.displayFeatures, customDisplayFeatures);
   });
@@ -223,6 +225,7 @@ void main() {
           disableAnimations: true,
           boldText: true,
           highContrast: true,
+          navigationMode: NavigationMode.directional,
           displayFeatures: displayFeatures,
         ),
         child: Builder(
@@ -257,6 +260,7 @@ void main() {
     expect(unpadded.disableAnimations, true);
     expect(unpadded.boldText, true);
     expect(unpadded.highContrast, true);
+    expect(unpadded.navigationMode, NavigationMode.directional);
     expect(unpadded.displayFeatures, displayFeatures);
   });
 
@@ -291,6 +295,7 @@ void main() {
           disableAnimations: true,
           boldText: true,
           highContrast: true,
+          navigationMode: NavigationMode.directional,
           displayFeatures: displayFeatures,
         ),
         child: Builder(
@@ -322,6 +327,7 @@ void main() {
     expect(unpadded.disableAnimations, true);
     expect(unpadded.boldText, true);
     expect(unpadded.highContrast, true);
+    expect(unpadded.navigationMode, NavigationMode.directional);
     expect(unpadded.displayFeatures, displayFeatures);
   });
 
@@ -356,6 +362,7 @@ void main() {
           disableAnimations: true,
           boldText: true,
           highContrast: true,
+          navigationMode: NavigationMode.directional,
           displayFeatures: displayFeatures,
         ),
         child: Builder(
@@ -390,6 +397,7 @@ void main() {
     expect(unpadded.disableAnimations, true);
     expect(unpadded.boldText, true);
     expect(unpadded.highContrast, true);
+    expect(unpadded.navigationMode, NavigationMode.directional);
     expect(unpadded.displayFeatures, displayFeatures);
   });
 
@@ -424,6 +432,7 @@ void main() {
           disableAnimations: true,
           boldText: true,
           highContrast: true,
+          navigationMode: NavigationMode.directional,
           displayFeatures: displayFeatures,
         ),
         child: Builder(
@@ -455,6 +464,7 @@ void main() {
     expect(unpadded.disableAnimations, true);
     expect(unpadded.boldText, true);
     expect(unpadded.highContrast, true);
+    expect(unpadded.navigationMode, NavigationMode.directional);
     expect(unpadded.displayFeatures, displayFeatures);
   });
 
@@ -489,6 +499,7 @@ void main() {
           disableAnimations: true,
           boldText: true,
           highContrast: true,
+          navigationMode: NavigationMode.directional,
           displayFeatures: displayFeatures,
         ),
         child: Builder(
@@ -523,6 +534,7 @@ void main() {
     expect(unpadded.disableAnimations, true);
     expect(unpadded.boldText, true);
     expect(unpadded.highContrast, true);
+    expect(unpadded.navigationMode, NavigationMode.directional);
     expect(unpadded.displayFeatures, displayFeatures);
   });
 
@@ -557,6 +569,7 @@ void main() {
           disableAnimations: true,
           boldText: true,
           highContrast: true,
+          navigationMode: NavigationMode.directional,
           displayFeatures: displayFeatures,
         ),
         child: Builder(
@@ -588,6 +601,7 @@ void main() {
     expect(unpadded.disableAnimations, true);
     expect(unpadded.boldText, true);
     expect(unpadded.highContrast, true);
+    expect(unpadded.navigationMode, NavigationMode.directional);
     expect(unpadded.displayFeatures, displayFeatures);
   });
 
@@ -900,7 +914,7 @@ void main() {
     );
     expect(
       subScreenMediaQuery.viewPadding,
-      const EdgeInsets.only(top: 6.0, left:4.0, right: 8.0, bottom: 12.0),
+      const EdgeInsets.only(top: 6.0, left: 4.0, right: 8.0, bottom: 12.0),
     );
     expect(
       subScreenMediaQuery.viewInsets,
@@ -913,5 +927,14 @@ void main() {
     expect(subScreenMediaQuery.boldText, true);
     expect(subScreenMediaQuery.highContrast, true);
     expect(subScreenMediaQuery.displayFeatures, <DisplayFeature>[cutoutDisplayFeature]);
+  });
+
+  testWidgets('MediaQueryData.gestureSettings is set from window.viewConfiguration', (WidgetTester tester) async {
+    tester.binding.window.viewConfigurationTestValue = const ViewConfiguration(
+      gestureSettings: GestureSettings(physicalDoubleTapSlop: 100, physicalTouchSlop: 100),
+    );
+
+    expect(MediaQueryData.fromWindow(tester.binding.window).gestureSettings.touchSlop, closeTo(33.33, 0.1)); // Repeating, of course
+    tester.binding.window.viewConfigurationTestValue = null;
   });
 }

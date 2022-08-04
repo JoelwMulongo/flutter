@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'dart:ui' as ui show window;
-import 'dart:ui' show Size, Locale, WindowPadding, AccessibilityFeatures, Brightness;
+import 'dart:ui' show AccessibilityFeatures, Brightness, Locale, Size, WindowPadding;
 
 import 'package:flutter/widgets.dart' show WidgetsBinding, WidgetsBindingObserver;
 import 'package:flutter_test/flutter_test.dart';
@@ -123,6 +123,18 @@ void main() {
       },
       propertyFaker: (TestWidgetsFlutterBinding binding, bool fakeValue) {
         binding.window.alwaysUse24HourFormatTestValue = fakeValue;
+      },
+    );
+  });
+
+  testWidgets('TestWindow can fake brieflyShowPassword', (WidgetTester tester) async {
+    verifyThatTestWindowCanFakeProperty<bool>(
+      tester: tester,
+      realValue: ui.window.brieflyShowPassword,
+      fakeValue: !ui.window.brieflyShowPassword,
+      propertyRetriever: () => WidgetsBinding.instance.window.brieflyShowPassword,
+      propertyFaker: (TestWidgetsFlutterBinding binding, bool fakeValue) {
+        binding.window.brieflyShowPasswordTestValue = fakeValue;
       },
     );
   });

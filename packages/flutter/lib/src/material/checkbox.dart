@@ -12,7 +12,7 @@ import 'theme.dart';
 import 'theme_data.dart';
 import 'toggleable.dart';
 
-/// A material design checkbox.
+/// A Material Design checkbox.
 ///
 /// The checkbox itself does not maintain any state. Instead, when the state of
 /// the checkbox changes, the widget calls the [onChanged] callback. Most
@@ -46,7 +46,7 @@ import 'toggleable.dart';
 ///  * <https://material.io/design/components/selection-controls.html#checkboxes>
 ///  * <https://material.io/design/components/lists.html#types>
 class Checkbox extends StatefulWidget {
-  /// Creates a material design checkbox.
+  /// Creates a Material Design checkbox.
   ///
   /// The checkbox itself does not maintain any state. Instead, when the state of
   /// the checkbox changes, the widget calls the [onChanged] callback. Most
@@ -63,7 +63,7 @@ class Checkbox extends StatefulWidget {
   ///
   /// The values of [tristate] and [autofocus] must not be null.
   const Checkbox({
-    Key? key,
+    super.key,
     required this.value,
     this.tristate = false,
     required this.onChanged,
@@ -83,8 +83,7 @@ class Checkbox extends StatefulWidget {
     this.side,
   }) : assert(tristate != null),
        assert(tristate || value != null),
-       assert(autofocus != null),
-       super(key: key);
+       assert(autofocus != null);
 
   /// Whether this checkbox is checked.
   ///
@@ -148,7 +147,7 @@ class Checkbox extends StatefulWidget {
 
   /// The color to use when this checkbox is checked.
   ///
-  /// Defaults to [ThemeData.toggleableActiveColor].
+  /// Defaults to [ColorScheme.secondary].
   ///
   /// If [fillColor] returns a non-null color in the [MaterialState.selected]
   /// state, it will be used instead of this color.
@@ -172,7 +171,7 @@ class Checkbox extends StatefulWidget {
   /// Checkbox(
   ///   value: true,
   ///   onChanged: (_){},
-  ///   fillColor: MaterialStateProperty.resolveWith<Color>((states) {
+  ///   fillColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
   ///     if (states.contains(MaterialState.disabled)) {
   ///       return Colors.orange.withOpacity(.32);
   ///     }
@@ -186,7 +185,7 @@ class Checkbox extends StatefulWidget {
   /// If null, then the value of [activeColor] is used in the selected
   /// state. If that is also null, the value of [CheckboxThemeData.fillColor]
   /// is used. If that is also null, then [ThemeData.disabledColor] is used in
-  /// the disabled state, [ThemeData.toggleableActiveColor] is used in the
+  /// the disabled state, [ColorScheme.secondary] is used in the
   /// selected state, and [ThemeData.unselectedWidgetColor] is used in the
   /// default state.
   final MaterialStateProperty<Color?>? fillColor;
@@ -273,7 +272,7 @@ class Checkbox extends StatefulWidget {
   /// [kRadialReactionAlpha], [focusColor] and [hoverColor] is used in the
   /// pressed, focused and hovered state. If that is also null,
   /// the value of [CheckboxThemeData.overlayColor] is used. If that is
-  /// also null, then the value of [ThemeData.toggleableActiveColor] with alpha
+  /// also null, then the value of [ColorScheme.secondary] with alpha
   /// [kRadialReactionAlpha], [ThemeData.focusColor] and [ThemeData.hoverColor]
   /// is used in the pressed, focused and hovered state.
   final MaterialStateProperty<Color?>? overlayColor;
@@ -386,17 +385,19 @@ class _CheckboxState extends State<Checkbox> with TickerProviderStateMixin, Togg
         return themeData.disabledColor;
       }
       if (states.contains(MaterialState.selected)) {
-        return themeData.toggleableActiveColor;
+        return themeData.colorScheme.secondary;
       }
       return themeData.unselectedWidgetColor;
     });
   }
 
   BorderSide? _resolveSide(BorderSide? side) {
-    if (side is MaterialStateBorderSide)
+    if (side is MaterialStateBorderSide) {
       return MaterialStateProperty.resolveAs<BorderSide?>(side, states);
-    if (!states.contains(MaterialState.selected))
+    }
+    if (!states.contains(MaterialState.selected)) {
       return side;
+    }
     return null;
   }
 
@@ -468,7 +469,7 @@ class _CheckboxState extends State<Checkbox> with TickerProviderStateMixin, Togg
       ?? const Color(0xFFFFFFFF);
 
     return Semantics(
-      checked: widget.value == true,
+      checked: widget.value ?? false,
       child: buildToggleable(
         mouseCursor: effectiveMouseCursor,
         focusNode: widget.focusNode,
@@ -648,10 +649,11 @@ class _CheckboxPainter extends ToggleablePainter {
       } else {
         _drawBox(canvas, outer, paint, side, true);
         final double tShrink = (t - 0.5) * 2.0;
-        if (previousValue == null || value == null)
+        if (previousValue == null || value == null) {
           _drawDash(canvas, origin, tShrink, strokePaint);
-        else
+        } else {
           _drawCheck(canvas, origin, tShrink, strokePaint);
+        }
       }
     } else { // Two cases: null to true, true to null
       final Rect outer = _outerRectAt(origin, 1.0);
@@ -660,16 +662,18 @@ class _CheckboxPainter extends ToggleablePainter {
       _drawBox(canvas, outer, paint, side, true);
       if (tNormalized <= 0.5) {
         final double tShrink = 1.0 - tNormalized * 2.0;
-        if (previousValue == true)
+        if (previousValue ?? false) {
           _drawCheck(canvas, origin, tShrink, strokePaint);
-        else
+        } else {
           _drawDash(canvas, origin, tShrink, strokePaint);
+        }
       } else {
         final double tExpand = (tNormalized - 0.5) * 2.0;
-        if (value == true)
+        if (value ?? false) {
           _drawCheck(canvas, origin, tExpand, strokePaint);
-        else
+        } else {
           _drawDash(canvas, origin, tExpand, strokePaint);
+        }
       }
     }
   }
